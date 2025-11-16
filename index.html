@@ -23,7 +23,9 @@
         .submit-btn:hover { background-color: var(--secondary-color); }
         .switch-auth { text-align: center; margin-top: 15px; color: var(--gray-color); }
         .switch-auth a { color: var(--primary-color); cursor: pointer; font-weight: 500; }
-        .cart-badge { background-color: var(--secondary-color); color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; margin-left: 5px; }
+        .cart-badge { background-color: var(--secondary-color); color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; position: relative; top: -2px; margin-left: 5px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-email { font-size: 14px; color: var(--gray-color); }
         .order-btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: var(--transition); margin-top: 10px; width: 100%; }
         .order-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
@@ -39,8 +41,9 @@
         .add-to-cart-btn { background-color: var(--primary-color); color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: var(--transition); width: 100%; margin-top: 10px; }
         .add-to-cart-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
         @media screen and (max-width: 768px) { 
-            .auth-buttons { flex-wrap: wrap; justify-content: center; } 
+            .auth-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; } 
             .auth-btn { font-size: 12px; padding: 6px 12px; }
+            nav .nav-links { padding-bottom: 80px; }
         }
     </style>
 </head>
@@ -59,8 +62,8 @@
                 <li><a href="#products">Products</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li id="authSection" class="auth-buttons">
-                    <button class="auth-btn" onclick="openLogin()">Login</button>
-                    <button class="auth-btn" onclick="openSignup()">Sign Up</button>
+                    <button class="auth-btn" id="loginBtn">Login</button>
+                    <button class="auth-btn" id="signupBtn">Sign Up</button>
                 </li>
             </ul>
         </nav>
@@ -69,10 +72,10 @@
     <!-- Auth Modal -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <span class="close" id="closeAuthModal">&times;</span>
             <h2 id="modalTitle">Login</h2>
             <div id="authMessage"></div>
-            <form id="authForm" onsubmit="return handleAuth(event)">
+            <form id="authForm">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" required>
@@ -84,7 +87,7 @@
                 <button type="submit" class="submit-btn" id="authSubmitBtn">Login</button>
             </form>
             <div class="switch-auth">
-                <span id="switchText">Don't have an account? <a onclick="switchAuthMode()">Sign Up</a></span>
+                <span id="switchText">Don't have an account? <a id="switchLink">Sign Up</a></span>
             </div>
         </div>
     </div>
@@ -92,18 +95,18 @@
     <!-- Cart Modal -->
     <div id="cartModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeCart()">&times;</span>
+            <span class="close" id="closeCartModal">&times;</span>
             <h2>Your Cart</h2>
             <div id="cartItems"></div>
             <div id="cartTotal" style="text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px;"></div>
-            <button class="order-btn" onclick="placeOrder()" id="placeOrderBtn">Place Order</button>
+            <button class="order-btn" id="placeOrderBtn">Place Order</button>
         </div>
     </div>
 
     <!-- Orders Modal -->
     <div id="ordersModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeOrders()">&times;</span>
+            <span class="close" id="closeOrdersModal">&times;</span>
             <h2>My Orders</h2>
             <div id="ordersList" class="order-history"></div>
         </div>
@@ -111,7 +114,7 @@
 
     <section id="home" class="hero">
         <div class="hero-content">
-            <h2>Your One-Stop Shop for Streaming Services</h2>
+            <h2>Your One‑Stop Shop for Streaming Services</h2>
             <p>Access your favorite shows and music at unbeatable prices!</p>
             <a href="#products" class="btn primary-btn">View Products</a>
         </div>
@@ -139,6 +142,7 @@
             <p>Explore our offerings for streaming accounts:</p>
 
             <div class="price-list">
+                <!-- Netflix Card -->
                 <div class="service-card">
                     <div class="service-header netflix">
                         <h3><i class="fab fa-netflix"></i> Netflix</h3>
@@ -150,22 +154,22 @@
                                 <div class="option-item">
                                     <span class="duration">1 Month</span>
                                     <span class="price">$3.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'User Account', '1 Month', 3)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Month" data-price="3">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">3 Months</span>
                                     <span class="price">$7.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'User Account', '3 Months', 7)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="3 Months" data-price="7">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">6 Months</span>
                                     <span class="price">$14.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'User Account', '6 Months', 14)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="6 Months" data-price="14">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">1 Year</span>
                                     <span class="price">$21.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'User Account', '1 Year', 21)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Year" data-price="21">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -175,23 +179,24 @@
                                 <div class="option-item">
                                     <span class="duration">1 Month</span>
                                     <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'Full Account', '1 Month', 9)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Month" data-price="9">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">3 Months</span>
                                     <span class="price">$24.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'Full Account', '3 Months', 24)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="3 Months" data-price="24">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">1 Year</span>
                                     <span class="price">$90.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Netflix', 'Full Account', '1 Year', 90)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Year" data-price="90">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Anghami Card -->
                 <div class="service-card">
                     <div class="service-header anghami">
                         <h3><i class="fas fa-music"></i> Anghami</h3>
@@ -201,22 +206,23 @@
                             <div class="option-item">
                                 <span class="duration">3 Months</span>
                                 <span class="price">$7.00</span>
-                                <button class="add-to-cart-btn" onclick="addToCart('Anghami', 'Premium', '3 Months', 7)">Add to Cart</button>
+                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="3 Months" data-price="7">Add to Cart</button>
                             </div>
                             <div class="option-item">
                                 <span class="duration">6 Months</span>
                                 <span class="price">$14.00</span>
-                                <button class="add-to-cart-btn" onclick="addToCart('Anghami', 'Premium', '6 Months', 14)">Add to Cart</button>
+                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="6 Months" data-price="14">Add to Cart</button>
                             </div>
                             <div class="option-item">
                                 <span class="duration">1 Year</span>
                                 <span class="price">$20.00</span>
-                                <button class="add-to-cart-btn" onclick="addToCart('Anghami', 'Premium', '1 Year', 20)">Add to Cart</button>
+                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="1 Year" data-price="20">Add to Cart</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Shahid Card -->
                 <div class="service-card">
                     <div class="service-header shahid">
                         <h3><i class="fas fa-tv"></i> Shahid</h3>
@@ -228,17 +234,17 @@
                                 <div class="option-item">
                                     <span class="duration">1 Month</span>
                                     <span class="price">$2.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'User Account', '1 Month', 2)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Month" data-price="2">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">3 Months</span>
                                     <span class="price">$4.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'User Account', '3 Months', 4)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="3 Months" data-price="4">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">1 Year</span>
                                     <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'User Account', '1 Year', 9)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Year" data-price="9">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -248,23 +254,24 @@
                                 <div class="option-item">
                                     <span class="duration">1 Month</span>
                                     <span class="price">$5.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'Full Account', '1 Month', 5)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Month" data-price="5">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">3 Months</span>
                                     <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'Full Account', '3 Months', 9)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="3 Months" data-price="9">Add to Cart</button>
                                 </div>
                                 <div class="option-item">
                                     <span class="duration">1 Year</span>
                                     <span class="price">$30.00</span>
-                                    <button class="add-to-cart-btn" onclick="addToCart('Shahid', 'Full Account', '1 Year', 30)">Add to Cart</button>
+                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Year" data-price="30">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Coming Soon Card -->
                 <div class="service-card coming-soon">
                     <div class="service-header disney">
                         <h3><i class="fab fa-disney"></i> Disney+ (Coming Soon!)</h3>
@@ -273,6 +280,7 @@
                         <p class="coming-soon-text">Stay tuned for amazing content!</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -315,9 +323,25 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged, 
+            sendEmailVerification
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            where, 
+            getDocs, 
+            serverTimestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB8KDenTHSjT5-wAo9WOMmfUGiozuZzDd0",
             authDomain: "lakkisstock-291e8.firebaseapp.com",
@@ -328,97 +352,133 @@
             measurementId: "G-T2PWETN37Q"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Global variables
         let currentUser = null;
         let cart = [];
         let isSignUpMode = false;
 
+        // Monitor auth state
         onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            updateAuthUI();
-            if (user) loadUserOrders();
+            if (user) {
+                if (!user.emailVerified) {
+                    alert("Please verify your email before accessing your account.");
+                    signOut(auth);
+                    return;
+                }
+                currentUser = user;
+                updateAuthUI();
+                loadUserOrders();
+            } else {
+                currentUser = null;
+                updateAuthUI();
+            }
         });
 
+        // Update UI based on auth status
         function updateAuthUI() {
             const authSection = document.getElementById('authSection');
             
             if (currentUser) {
                 authSection.innerHTML = `
-                    <button class="auth-btn" onclick="openCart()">
+                    <button class="auth-btn" id="cartBtn">
                         <i class="fas fa-shopping-cart"></i> Cart<span class="cart-badge" id="cartBadge">0</span>
                     </button>
-                    <button class="auth-btn" onclick="openOrders()">
+                    <button class="auth-btn" id="ordersBtn">
                         <i class="fas fa-box"></i> Orders
                     </button>
-                    <button class="auth-btn" onclick="doLogout()">
+                    <button class="auth-btn" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 `;
+                document.getElementById('cartBtn').addEventListener('click', openCart);
+                document.getElementById('ordersBtn').addEventListener('click', openOrders);
+                document.getElementById('logoutBtn').addEventListener('click', logout);
                 updateCartBadge();
             } else {
                 authSection.innerHTML = `
-                    <button class="auth-btn" onclick="openLogin()">Login</button>
-                    <button class="auth-btn" onclick="openSignup()">Sign Up</button>
+                    <button class="auth-btn" id="loginBtn">Login</button>
+                    <button class="auth-btn" id="signupBtn">Sign Up</button>
                 `;
+                document.getElementById('loginBtn').addEventListener('click', () => openAuthModal(false));
+                document.getElementById('signupBtn').addEventListener('click', () => openAuthModal(true));
                 cart = [];
             }
         }
 
-        window.openLogin = function() {
-            isSignUpMode = false;
-            document.getElementById('modalTitle').textContent = 'Login';
-            document.getElementById('authSubmitBtn').textContent = 'Login';
-            document.getElementById('switchText').innerHTML = "Don't have an account? <a onclick='switchAuthMode()'>Sign Up</a>";
-            document.getElementById('authModal').style.display = 'block';
+        // Open auth modal
+        function openAuthModal(signUpMode) {
+            isSignUpMode = signUpMode;
+            const modal = document.getElementById('authModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const switchText = document.getElementById('switchText');
+            
+            modalTitle.textContent = signUpMode ? 'Sign Up' : 'Login';
+            submitBtn.textContent = signUpMode ? 'Sign Up' : 'Login';
+            switchText.innerHTML = signUpMode 
+                ? 'Already have an account? <a id="switchLink">Login</a>' 
+                : "Don't have an account? <a id="switchLink">Sign Up</a>";
+            
+            modal.style.display = 'block';
             document.getElementById('authMessage').innerHTML = '';
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
-        };
+            
+            setTimeout(() => {
+                const switchLink = document.getElementById('switchLink');
+                if (switchLink) {
+                    switchLink.addEventListener('click', () => openAuthModal(!isSignUpMode));
+                }
+            }, 100);
+        }
 
-        window.openSignup = function() {
-            isSignUpMode = true;
-            document.getElementById('modalTitle').textContent = 'Sign Up';
-            document.getElementById('authSubmitBtn').textContent = 'Sign Up';
-            document.getElementById('switchText').innerHTML = "Already have an account? <a onclick='switchAuthMode()'>Login</a>";
-            document.getElementById('authModal').style.display = 'block';
-            document.getElementById('authMessage').innerHTML = '';
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-        };
-
-        window.switchAuthMode = function() {
-            isSignUpMode = !isSignUpMode;
-            if (isSignUpMode) {
-                window.openSignup();
-            } else {
-                window.openLogin();
-            }
-        };
-
-        window.closeAuthModal = function() {
+        // Close modals
+        document.getElementById('closeAuthModal').addEventListener('click', () => {
             document.getElementById('authModal').style.display = 'none';
-        };
+        });
+        document.getElementById('closeCartModal').addEventListener('click', closeCart);
+        document.getElementById('closeOrdersModal').addEventListener('click', closeOrders);
 
-        window.handleAuth = async function(e) {
+        // Handle auth form submit
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const messageDiv = document.getElementById('authMessage');
-
             try {
                 if (isSignUpMode) {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    messageDiv.innerHTML = '<div class="success-message">Account created successfully!</div>';
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    // Send email verification
+                    await sendEmailVerification(user);
+                    messageDiv.innerHTML = `
+                        <div class="success-message">
+                            Account created successfully!<br>
+                            Please check your email to verify your account before logging in.
+                        </div>
+                    `;
                 } else {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    if (!user.emailVerified) {
+                        messageDiv.innerHTML = `
+                            <div class="error-message">
+                                Please verify your email before logging in.
+                            </div>
+                        `;
+                        await signOut(auth);
+                        return;
+                    }
                     messageDiv.innerHTML = '<div class="success-message">Logged in successfully!</div>';
                 }
                 setTimeout(() => {
                     document.getElementById('authModal').style.display = 'none';
-                }, 1500);
+                }, 2000);
             } catch (error) {
                 let errorMessage = 'An error occurred. Please try again.';
                 if (error.code === 'auth/email-already-in-use') errorMessage = 'Email already in use.';
@@ -427,55 +487,55 @@
                 else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorMessage = 'Invalid email or password.';
                 messageDiv.innerHTML = `<div class="error-message">${errorMessage}</div>`;
             }
-            return false;
-        };
+        });
 
-        window.doLogout = async function() {
+        // Logout function
+        async function logout() {
             try {
                 await signOut(auth);
                 cart = [];
             } catch (error) {
                 alert('Error logging out: ' + error.message);
             }
-        };
+        }
 
-        window.addToCart = function(service, type, duration, price) {
+        // Cart functions
+        function addToCart(service, type, duration, price) {
             if (!currentUser) {
-                window.openLogin();
+                openAuthModal(false);
                 return;
             }
-
             const item = { id: Date.now(), service, type, duration, price };
             cart.push(item);
             updateCartBadge();
             alert('Item added to cart!');
-        };
+        }
 
-        window.removeFromCart = function(itemId) {
+        function removeFromCart(itemId) {
             cart = cart.filter(item => item.id !== itemId);
             displayCart();
             updateCartBadge();
-        };
+        }
 
         function updateCartBadge() {
             const badge = document.getElementById('cartBadge');
             if (badge) badge.textContent = cart.length;
         }
 
-        window.openCart = function() {
+        function openCart() {
             displayCart();
             document.getElementById('cartModal').style.display = 'block';
-        };
+        }
 
-        window.closeCart = function() {
+        function closeCart() {
             document.getElementById('cartModal').style.display = 'none';
-        };
+        }
 
         function displayCart() {
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
             const placeOrderBtn = document.getElementById('placeOrderBtn');
-            
+
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding: 20px;">Your cart is empty</p>';
                 cartTotal.innerHTML = '';
@@ -485,7 +545,7 @@
 
             let total = 0;
             let html = '';
-            
+
             cart.forEach(item => {
                 total += item.price;
                 html += `
@@ -496,28 +556,27 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span style="font-weight: bold;">$${item.price}</span>
-                            <button class="remove-btn" onclick="removeFromCart(${item.id})">
+                            <button class="remove-btn" onclick="window.removeFromCart(${item.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
                 `;
             });
-            
+
             cartItems.innerHTML = html;
             cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
             placeOrderBtn.style.display = 'block';
         }
 
-        window.placeOrder = async function() {
+        // Place order
+        document.getElementById('placeOrderBtn').addEventListener('click', async function() {
             if (cart.length === 0) {
                 alert('Your cart is empty!');
                 return;
             }
-
             try {
                 const total = cart.reduce((sum, item) => sum + item.price, 0);
-                
                 await addDoc(collection(db, 'orders'), {
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
@@ -526,47 +585,43 @@
                     status: 'pending',
                     createdAt: serverTimestamp()
                 });
-
                 alert('Order placed successfully! We will contact you soon.');
                 cart = [];
                 updateCartBadge();
-                window.closeCart();
+                closeCart();
                 loadUserOrders();
             } catch (error) {
                 alert('Error placing order: ' + error.message);
             }
-        };
+        });
 
+        // Orders functions
         async function loadUserOrders() {
             if (!currentUser) return;
-
             try {
                 const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
                 const querySnapshot = await getDocs(q);
                 const orders = [];
-                
                 querySnapshot.forEach((doc) => {
                     orders.push({ id: doc.id, ...doc.data() });
                 });
-
                 window.userOrders = orders;
             } catch (error) {
                 console.error('Error loading orders:', error);
             }
         }
 
-        window.openOrders = function() {
+        function openOrders() {
             displayOrders();
             document.getElementById('ordersModal').style.display = 'block';
-        };
+        }
 
-        window.closeOrders = function() {
+        function closeOrders() {
             document.getElementById('ordersModal').style.display = 'none';
-        };
+        }
 
         function displayOrders() {
             const ordersList = document.getElementById('ordersList');
-            
             if (!window.userOrders || window.userOrders.length === 0) {
                 ordersList.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding: 20px;">No orders yet</p>';
                 return;
@@ -595,30 +650,41 @@
                     </div>
                 `;
             });
-            
             ordersList.innerHTML = html;
         }
 
+        // Add-to-cart button listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const service = this.getAttribute('data-service');
+                    const type = this.getAttribute('data-type');
+                    const duration = this.getAttribute('data-duration');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    addToCart(service, type, duration, price);
+                });
+            });
+        });
+
+        // Mobile menu toggle
         document.getElementById('navToggle').addEventListener('click', function () {
             document.querySelector('.nav-links').classList.toggle('active');
             this.classList.toggle('active');
         });
 
+        // Close modals by clicking outside
         window.onclick = function(event) {
             const authModal = document.getElementById('authModal');
             const cartModal = document.getElementById('cartModal');
             const ordersModal = document.getElementById('ordersModal');
-            
-            if (event.target == authModal) {
-                authModal.style.display = 'none';
-            }
-            if (event.target == cartModal) {
-                cartModal.style.display = 'none';
-            }
-            if (event.target == ordersModal) {
-                ordersModal.style.display = 'none';
-            }
+            if (event.target == authModal) authModal.style.display = 'none';
+            if (event.target == cartModal) cartModal.style.display = 'none';
+            if (event.target == ordersModal) ordersModal.style.display = 'none';
         };
+
+        // Expose removeFromCart globally
+        window.removeFromCart = removeFromCart;
+
     </script>
 </body>
 </html>
