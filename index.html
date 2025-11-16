@@ -1,690 +1,584 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LakkisStock - Your Streaming Solution</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .auth-buttons { display: flex; gap: 10px; align-items: center; }
-        .auth-btn { padding: 8px 20px; border-radius: 20px; background-color: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: 500; transition: var(--transition); }
-        .auth-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); animation: fadeIn 0.3s; }
-        .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: slideDown 0.3s; }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: #000; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-        .form-group input:focus { outline: none; border-color: var(--primary-color); }
-        .submit-btn { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--transition); }
-        .submit-btn:hover { background-color: var(--secondary-color); }
-        .switch-auth { text-align: center; margin-top: 15px; color: var(--gray-color); }
-        .switch-auth a { color: var(--primary-color); cursor: pointer; font-weight: 500; }
-        .cart-badge { background-color: var(--secondary-color); color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; position: relative; top: -2px; margin-left: 5px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-email { font-size: 14px; color: var(--gray-color); }
-        .order-btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: var(--transition); margin-top: 10px; width: 100%; }
-        .order-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
-        .remove-btn { background-color: var(--secondary-color); color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
-        .order-history { max-height: 400px; overflow-y: auto; }
-        .order-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #eee; }
-        .order-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .status-pending { background-color: #fff3cd; color: #856404; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .error-message { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        .success-message { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        .add-to-cart-btn { background-color: var(--primary-color); color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: var(--transition); width: 100%; margin-top: 10px; }
-        .add-to-cart-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
-        @media screen and (max-width: 768px) { 
-            .auth-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; } 
-            .auth-btn { font-size: 12px; padding: 6px 12px; }
-            nav .nav-links { padding-bottom: 80px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LakkisStock - Your Streaming Solution</title>
+
+  <!-- Fonts + Icons + CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <style>
+    .auth-buttons { display: flex; gap: 10px; align-items: center; }
+    .auth-btn { padding: 8px 20px; border-radius: 20px; background-color: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: 500; transition: var(--transition); }
+    .auth-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); animation: fadeIn 0.3s; }
+    .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: slideDown 0.3s; }
+    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .close:hover { color: #000; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+    .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    .form-group input:focus { outline: none; border-color: var(--primary-color); }
+    .submit-btn { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .submit-btn:hover { background-color: var(--secondary-color); }
+    .switch-auth { text-align: center; margin-top: 15px; color: var(--gray-color); }
+    .switch-auth a { color: var(--primary-color); cursor: pointer; font-weight: 500; }
+    .cart-badge { background-color: var(--secondary-color); color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; position: relative; top: -2px; margin-left: 5px; }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-email { font-size: 14px; color: var(--gray-color); }
+    .order-btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: var(--transition); margin-top: 10px; width: 100%; }
+    .order-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .remove-btn { background-color: var(--secondary-color); color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+    .order-history { max-height: 400px; overflow-y: auto; }
+    .order-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #eee; }
+    .order-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-pending { background-color: #fff3cd; color: #856404; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .error-message { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+    .success-message { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+    .add-to-cart-btn { background-color: var(--primary-color); color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: var(--transition); width: 100%; margin-top: 10px; }
+    .add-to-cart-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+    @media screen and (max-width: 768px) { 
+      .auth-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; } 
+      .auth-btn { font-size: 12px; padding: 6px 12px; }
+      nav .nav-links { padding-bottom: 80px; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <h1 id="site-title"><i class="fas fa-play-circle"></i> LakkisStock</h1>
-            <div class="nav-toggle" id="navToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li id="authSection" class="auth-buttons">
-                    <button class="auth-btn" id="loginBtn">Login</button>
-                    <button class="auth-btn" id="signupBtn">Sign Up</button>
-                </li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Header & Navigation -->
+  <header>
+    <nav>
+      <h1 id="site-title"><i class="fas fa-play-circle"></i> LakkisStock</h1>
+      <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li id="authSection" class="auth-buttons">
+          <button class="auth-btn" id="loginBtn">Login</button>
+          <button class="auth-btn" id="signupBtn">Sign Up</button>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- Auth Modal -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeAuthModal">&times;</span>
-            <h2 id="modalTitle">Login</h2>
-            <div id="authMessage"></div>
-            <form id="authForm">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit" class="submit-btn" id="authSubmitBtn">Login</button>
-            </form>
-            <div class="switch-auth">
-                <span id="switchText">Don't have an account? <a id="switchLink">Sign Up</a></span>
-            </div>
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeAuthModal">&times;</span>
+      <h2 id="modalTitle">Login</h2>
+      <div id="authMessage"></div>
+      <form id="authForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
         </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+        <button type="submit" class="submit-btn" id="authSubmitBtn">Login</button>
+      </form>
+      <div class="switch-auth">
+        <span id="switchText">Don't have an account? <a id="switchLink">Sign Up</a></span>
+      </div>
     </div>
+  </div>
 
-    <!-- Cart Modal -->
-    <div id="cartModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeCartModal">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cartItems"></div>
-            <div id="cartTotal" style="text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px;"></div>
-            <button class="order-btn" id="placeOrderBtn">Place Order</button>
-        </div>
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeCartModal">&times;</span>
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <div id="cartTotal" style="text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px;"></div>
+      <button class="order-btn" id="placeOrderBtn">Place Order</button>
     </div>
+  </div>
 
-    <!-- Orders Modal -->
-    <div id="ordersModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeOrdersModal">&times;</span>
-            <h2>My Orders</h2>
-            <div id="ordersList" class="order-history"></div>
-        </div>
+  <!-- Orders Modal -->
+  <div id="ordersModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeOrdersModal">&times;</span>
+      <h2>My Orders</h2>
+      <div id="ordersList" class="order-history"></div>
     </div>
+  </div>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h2>Your One‑Stop Shop for Streaming Services</h2>
-            <p>Access your favorite shows and music at unbeatable prices!</p>
-            <a href="#products" class="btn primary-btn">View Products</a>
-        </div>
-    </section>
+  <!-- Home Section -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h2>Your One‑Stop Shop for Streaming Services</h2>
+      <p>Access your favorite shows and music at unbeatable prices!</p>
+      <a href="#products" class="btn primary-btn">View Products</a>
+    </div>
+  </section>
 
-    <section id="about">
-        <div class="container">
-            <h2>About Us</h2>
-            <div class="about-content">
-                <p>LakkisStock is committed to providing affordable access to streaming services. We believe entertainment should be accessible to everyone.</p>
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <h2>About Us</h2>
+      <div class="about-content">
+        <p>LakkisStock is committed to providing affordable access to streaming services. We believe entertainment should be accessible to everyone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Authenticity Guarantee Section -->
+  <section id="legit" class="legit-section">
+    <div class="container">
+      <h2>Authenticity Guarantee</h2>
+      <p>Our streaming accounts are fully licensed and legally sourced. We do not distribute stolen, pirated, or unauthorized content. Shop with confidence knowing you get genuine, safe, and reliable access to your favorite services.</p>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products">
+    <div class="container">
+      <h2>Our Products</h2>
+      <p>Explore our offerings for streaming accounts:</p>
+      <div class="price-list">
+        <!-- Netflix Card -->
+        <div class="service-card">
+          <div class="service-header netflix">
+            <h3><i class="fab fa-netflix"></i> Netflix</h3>
+          </div>
+          <div class="price-options">
+            <div class="option-group">
+              <h4>User Account</h4>
+              <div class="options">
+                <div class="option-item">
+                  <span class="duration">1 Month</span>
+                  <span class="price">$3.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Month" data-price="3">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">3 Months</span>
+                  <span class="price">$7.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="3 Months" data-price="7">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">6 Months</span>
+                  <span class="price">$14.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="6 Months" data-price="14">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">1 Year</span>
+                  <span class="price">$21.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Year" data-price="21">Add to Cart</button>
+                </div>
+              </div>
             </div>
-        </div>
-    </section>
-
-    <section id="legit" class="legit-section">
-        <div class="container">
-            <h2>Authenticity Guarantee</h2>
-            <p>Our streaming accounts are fully licensed and legally sourced. We do not distribute stolen, pirated, or unauthorized content. Shop with confidence knowing you get genuine, safe, and reliable access to your favorite services.</p>
-        </div>
-    </section>
-
-    <section id="products">
-        <div class="container">
-            <h2>Our Products</h2>
-            <p>Explore our offerings for streaming accounts:</p>
-
-            <div class="price-list">
-                <!-- Netflix Card -->
-                <div class="service-card">
-                    <div class="service-header netflix">
-                        <h3><i class="fab fa-netflix"></i> Netflix</h3>
-                    </div>
-                    <div class="price-options">
-                        <div class="option-group">
-                            <h4>User Account</h4>
-                            <div class="options">
-                                <div class="option-item">
-                                    <span class="duration">1 Month</span>
-                                    <span class="price">$3.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Month" data-price="3">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">3 Months</span>
-                                    <span class="price">$7.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="3 Months" data-price="7">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">6 Months</span>
-                                    <span class="price">$14.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="6 Months" data-price="14">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">1 Year</span>
-                                    <span class="price">$21.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="User Account" data-duration="1 Year" data-price="21">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="option-group">
-                            <h4>Full Account</h4>
-                            <div class="options">
-                                <div class="option-item">
-                                    <span class="duration">1 Month</span>
-                                    <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Month" data-price="9">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">3 Months</span>
-                                    <span class="price">$24.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="3 Months" data-price="24">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">1 Year</span>
-                                    <span class="price">$90.00</span>
-                                    <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Year" data-price="90">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="option-group">
+              <h4>Full Account</h4>
+              <div class="options">
+                <div class="option-item">
+                  <span class="duration">1 Month</span>
+                  <span class="price">$9.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Month" data-price="9">Add to Cart</button>
                 </div>
-
-                <!-- Anghami Card -->
-                <div class="service-card">
-                    <div class="service-header anghami">
-                        <h3><i class="fas fa-music"></i> Anghami</h3>
-                    </div>
-                    <div class="price-options">
-                        <div class="options">
-                            <div class="option-item">
-                                <span class="duration">3 Months</span>
-                                <span class="price">$7.00</span>
-                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="3 Months" data-price="7">Add to Cart</button>
-                            </div>
-                            <div class="option-item">
-                                <span class="duration">6 Months</span>
-                                <span class="price">$14.00</span>
-                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="6 Months" data-price="14">Add to Cart</button>
-                            </div>
-                            <div class="option-item">
-                                <span class="duration">1 Year</span>
-                                <span class="price">$20.00</span>
-                                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="1 Year" data-price="20">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="option-item">
+                  <span class="duration">3 Months</span>
+                  <span class="price">$24.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="3 Months" data-price="24">Add to Cart</button>
                 </div>
-
-                <!-- Shahid Card -->
-                <div class="service-card">
-                    <div class="service-header shahid">
-                        <h3><i class="fas fa-tv"></i> Shahid</h3>
-                    </div>
-                    <div class="price-options">
-                        <div class="option-group">
-                            <h4>User Account</h4>
-                            <div class="options">
-                                <div class="option-item">
-                                    <span class="duration">1 Month</span>
-                                    <span class="price">$2.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Month" data-price="2">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">3 Months</span>
-                                    <span class="price">$4.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="3 Months" data-price="4">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">1 Year</span>
-                                    <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Year" data-price="9">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="option-group">
-                            <h4>Full Account</h4>
-                            <div class="options">
-                                <div class="option-item">
-                                    <span class="duration">1 Month</span>
-                                    <span class="price">$5.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Month" data-price="5">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">3 Months</span>
-                                    <span class="price">$9.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="3 Months" data-price="9">Add to Cart</button>
-                                </div>
-                                <div class="option-item">
-                                    <span class="duration">1 Year</span>
-                                    <span class="price">$30.00</span>
-                                    <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Year" data-price="30">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="option-item">
+                  <span class="duration">1 Year</span>
+                  <span class="price">$90.00</span>
+                  <button class="add-to-cart-btn" data-service="Netflix" data-type="Full Account" data-duration="1 Year" data-price="90">Add to Cart</button>
                 </div>
-
-                <!-- Coming Soon Card -->
-                <div class="service-card coming-soon">
-                    <div class="service-header disney">
-                        <h3><i class="fab fa-disney"></i> Disney+ (Coming Soon!)</h3>
-                    </div>
-                    <div class="price-options">
-                        <p class="coming-soon-text">Stay tuned for amazing content!</p>
-                    </div>
-                </div>
-
+              </div>
             </div>
+          </div>
         </div>
-    </section>
 
-    <section id="contact">
-        <div class="container">
-            <h2>Contact Us</h2>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <p>Phone: (961) 70708025</p>
-                </div>
-                <div class="social-buttons">
-                    <a href="https://wa.me/96170708025" class="social-button whatsapp">
-                        <i class="fab fa-whatsapp"></i> WhatsApp Us
-                    </a>
-                    <a href="https://www.instagram.com/lakkisstock/" class="social-button instagram">
-                        <i class="fab fa-instagram"></i> Follow on Instagram
-                    </a>
-                    <a href="https://www.instagram.com/stories/highlights/18015522128034327/" class="social-button reviews">
-                        <i class="fas fa-star"></i> View Feedbacks
-                    </a>
-                </div>
+        <!-- Anghami Card -->
+        <div class="service-card">
+          <div class="service-header anghami">
+            <h3><i class="fas fa-music"></i> Anghami</h3>
+          </div>
+          <div class="price-options">
+            <div class="options">
+              <div class="option-item">
+                <span class="duration">3 Months</span>
+                <span class="price">$7.00</span>
+                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="3 Months" data-price="7">Add to Cart</button>
+              </div>
+              <div class="option-item">
+                <span class="duration">6 Months</span>
+                <span class="price">$14.00</span>
+                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="6 Months" data-price="14">Add to Cart</button>
+              </div>
+              <div class="option-item">
+                <span class="duration">1 Year</span>
+                <span class="price">$20.00</span>
+                <button class="add-to-cart-btn" data-service="Anghami" data-type="Premium" data-duration="1 Year" data-price="20">Add to Cart</button>
+              </div>
             </div>
+          </div>
         </div>
-    </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 LakkisStock. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#products">Products</a>
-                <a href="#contact">Contact</a>
+        <!-- Shahid Card -->
+        <div class="service-card">
+          <div class="service-header shahid">
+            <h3><i class="fas fa-tv"></i> Shahid</h3>
+          </div>
+          <div class="price-options">
+            <div class="option-group">
+              <h4>User Account</h4>
+              <div class="options">
+                <div class="option-item">
+                  <span class="duration">1 Month</span>
+                  <span class="price">$2.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Month" data-price="2">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">3 Months</span>
+                  <span class="price">$4.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="3 Months" data-price="4">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">1 Year</span>
+                  <span class="price">$9.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="User Account" data-duration="1 Year" data-price="9">Add to Cart</button>
+                </div>
+              </div>
             </div>
+            <div class="option-group">
+              <h4>Full Account</h4>
+              <div class="options">
+                <div class="option-item">
+                  <span class="duration">1 Month</span>
+                  <span class="price">$5.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Month" data-price="5">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">3 Months</span>
+                  <span class="price">$9.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="3 Months" data-price="9">Add to Cart</button>
+                </div>
+                <div class="option-item">
+                  <span class="duration">1 Year</span>
+                  <span class="price">$30.00</span>
+                  <button class="add-to-cart-btn" data-service="Shahid" data-type="Full Account" data-duration="1 Year" data-price="30">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </footer>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged, 
-            sendEmailVerification
-        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            query, 
-            where, 
-            getDocs, 
-            serverTimestamp 
-        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        <!-- Coming Soon Card -->
+        <div class="service-card coming-soon">
+          <div class="service-header disney">
+            <h3><i class="fab fa-disney"></i> Disney+ (Coming Soon!)</h3>
+          </div>
+          <div class="price-options">
+            <p class="coming-soon-text">Stay tuned for amazing content!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyB8KDenTHSjT5-wAo9WOMmfUGiozuZzDd0",
-            authDomain: "lakkisstock-291e8.firebaseapp.com",
-            projectId: "lakkisstock-291e8",
-            storageBucket: "lakkisstock-291e8.firebasestorage.app",
-            messagingSenderId: "556831771878",
-            appId: "1:556831771878:web:64ad1ba93d09d9c93a3f27",
-            measurementId: "G-T2PWETN37Q"
-        };
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <p>Phone: (961) 70708025</p>
+        </div>
+        <div class="social-buttons">
+          <a href="https://wa.me/96170708025" class="social-button whatsapp">
+            <i class="fab fa-whatsapp"></i> WhatsApp Us
+          </a>
+          <a href="https://www.instagram.com/lakkisstock/" class="social-button instagram">
+            <i class="fab fa-instagram"></i> Follow on Instagram
+          </a>
+          <a href="https://www.instagram.com/stories/highlights/18015522128034327/" class="social-button reviews">
+            <i class="fas fa-star"></i> View Feedbacks
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 LakkisStock. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#products">Products</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
 
-        // Global variables
-        let currentUser = null;
-        let cart = [];
-        let isSignUpMode = false;
+  <!-- Firebase & App Logic -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import {
+      getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      signOut, onAuthStateChanged, sendEmailVerification
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import {
+      getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Monitor auth state
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                if (!user.emailVerified) {
-                    alert("Please verify your email before accessing your account.");
-                    signOut(auth);
-                    return;
-                }
-                currentUser = user;
-                updateAuthUI();
-                loadUserOrders();
-            } else {
-                currentUser = null;
-                updateAuthUI();
-            }
+    const firebaseConfig = {
+      apiKey: "AIzaSyB8KDenTHSjT5-wAo9WOMmfUGiozuZzDd0",
+      authDomain: "lakkisstock-291e8.firebaseapp.com",
+      projectId: "lakkisstock-291e8",
+      storageBucket: "lakkisstock-291e8.appspot.com",
+      messagingSenderId: "556831771878",
+      appId: "1:556831771878:web:64ad1ba93d09d9c93a3f27",
+      measurementId: "G‑T2PWETN37Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let cart = [];
+    let isSignUpMode = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthUI();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        currentUser = user;
+        updateAuthUI();
+        loadUserOrders();
+      } else {
+        if (user && !user.emailVerified) {
+          alert("Please verify your email before accessing your account.");
+          signOut(auth);
+        }
+        currentUser = null;
+        updateAuthUI();
+      }
+    });
+
+    function updateAuthUI() {
+      const authSection = document.getElementById('authSection');
+      if (currentUser) {
+        authSection.innerHTML = `
+          <button class="auth-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i> Cart<span class="cart-badge" id="cartBadge">0</span></button>
+          <button class="auth-btn" id="ordersBtn"><i class="fas fa-box"></i> Orders</button>
+          <button class="auth-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        `;
+        document.getElementById('cartBtn').addEventListener('click', openCart);
+        document.getElementById('ordersBtn').addEventListener('click', openOrders);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        updateCartBadge();
+      } else {
+        authSection.innerHTML = `
+          <button class="auth-btn" id="loginBtn">Login</button>
+          <button class="auth-btn" id="signupBtn">Sign Up</button>
+        `;
+        document.getElementById('loginBtn').addEventListener('click', () => openAuthModal(false));
+        document.getElementById('signupBtn').addEventListener('click', () => openAuthModal(true));
+      }
+    }
+
+    function openAuthModal(signUpMode) {
+      isSignUpMode = signUpMode;
+      document.getElementById('modalTitle').textContent = signUpMode ? 'Sign Up' : 'Login';
+      document.getElementById('authSubmitBtn').textContent = signUpMode ? 'Sign Up' : 'Login';
+      document.getElementById('switchText').innerHTML = signUpMode
+        ? 'Already have an account? <a id="switchLink">Login</a>'
+        : "Don't have an account? <a id='switchLink'>Sign Up</a>";
+      document.getElementById('authModal').style.display = 'block';
+      document.getElementById('authMessage').innerHTML = '';
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+      setTimeout(() => {
+        const switchLink = document.getElementById('switchLink');
+        if (switchLink) switchLink.addEventListener('click', () => openAuthModal(!isSignUpMode));
+      }, 100);
+    }
+
+    document.getElementById('closeAuthModal').addEventListener('click', () => {
+      document.getElementById('authModal').style.display = 'none';
+    });
+    document.getElementById('closeCartModal').addEventListener('click', () => {
+      document.getElementById('cartModal').style.display = 'none';
+    });
+    document.getElementById('closeOrdersModal').addEventListener('click', () => {
+      document.getElementById('ordersModal').style.display = 'none';
+    });
+
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('authMessage');
+
+      try {
+        if (isSignUpMode) {
+          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          await sendEmailVerification(userCred.user);
+          messageDiv.innerHTML = `<div class="success-message">Account created! Please verify your email.</div>`;
+        } else {
+          const userCred = await signInWithEmailAndPassword(auth, email, password);
+          if (!userCred.user.emailVerified) {
+            messageDiv.innerHTML = `<div class="error-message">Please verify your email.</div>`;
+            await signOut(auth);
+            return;
+          }
+          messageDiv.innerHTML = `<div class="success-message">Logged in successfully!</div>`;
+        }
+        setTimeout(() => {
+          document.getElementById('authModal').style.display = 'none';
+        }, 2000);
+      } catch (error) {
+        messageDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
+      }
+    });
+
+    async function logout() {
+      await signOut(auth);
+      cart = [];
+    }
+
+    function addToCart(service, type, duration, price) {
+      if (!currentUser) {
+        openAuthModal(false);
+        return;
+      }
+      cart.push({ id: Date.now(), service, type, duration, price });
+      updateCartBadge();
+      alert('Item added to cart!');
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      if (badge) badge.textContent = cart.length;
+    }
+
+    function openCart() {
+      displayCart();
+      document.getElementById('cartModal').style.display = 'block';
+    }
+
+    function displayCart() {
+      const cartItemsEl = document.getElementById('cartItems');
+      const cartTotalEl = document.getElementById('cartTotal');
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      if (cart.length === 0) {
+        cartItemsEl.innerHTML = '<p style="text-align:center;color:var(--gray-color);padding:20px;">Your cart is empty</p>';
+        cartTotalEl.innerHTML = '';
+        placeOrderBtn.style.display = 'none';
+        return;
+      }
+      let total = 0;
+      let html = '';
+      cart.forEach(item => {
+        total += item.price;
+        html += `
+          <div class="cart-item">
+            <div><strong>${item.service}</strong> - ${item.type}<br><small>${item.duration}</small></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:bold;">$${item.price}</span>
+              <button class="remove-btn" onclick="window.removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+      });
+      cartItemsEl.innerHTML = html;
+      cartTotalEl.innerHTML = `Total: $${total.toFixed(2)}`;
+      placeOrderBtn.style.display = 'block';
+    }
+
+    document.getElementById('placeOrderBtn').addEventListener('click', async () => {
+      if (!currentUser || cart.length === 0) return;
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      await addDoc(collection(db, 'orders'), {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        items: cart,
+        total,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      });
+      alert('Order placed successfully!');
+      cart = [];
+      updateCartBadge();
+      displayCart();
+      loadUserOrders();
+    });
+
+    async function loadUserOrders() {
+      if (!currentUser) return;
+      const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
+      const snapshot = await getDocs(q);
+      window.userOrders = [];
+      snapshot.forEach(doc => window.userOrders.push({ id: doc.id, ...doc.data() }));
+    }
+
+    function openOrders() {
+      const ordersListEl = document.getElementById('ordersList');
+      if (!window.userOrders || window.userOrders.length === 0) {
+        ordersListEl.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding:20px;">No orders yet</p>';
+      } else {
+        ordersListEl.innerHTML = window.userOrders.map(order => `
+          <div class="order-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span><strong>Order Date:</strong> ${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</span>
+              <span class="order-status status-pending">${order.status}</span>
+            </div>
+            <div style="margin-bottom:10px;"><strong>Items:</strong>
+              ${order.items.map(i => `<div style="margin-left:10px;margin-top:5px;">• ${i.service} - ${i.type} (${i.duration}) - $${i.price}</div>`).join('')}
+            </div>
+            <div style="text-align:right;font-weight:bold;font-size:18px;color:var(--primary-color);">
+              Total: $${order.total.toFixed(2)}
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('ordersModal').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const service = btn.dataset.service;
+          const type = btn.dataset.type;
+          const duration = btn.dataset.duration;
+          const price = parseFloat(btn.dataset.price);
+          addToCart(service, type, duration, price);
         });
+      });
+    });
 
-        // Update UI based on auth status
-        function updateAuthUI() {
-            const authSection = document.getElementById('authSection');
-            
-            if (currentUser) {
-                authSection.innerHTML = `
-                    <button class="auth-btn" id="cartBtn">
-                        <i class="fas fa-shopping-cart"></i> Cart<span class="cart-badge" id="cartBadge">0</span>
-                    </button>
-                    <button class="auth-btn" id="ordersBtn">
-                        <i class="fas fa-box"></i> Orders
-                    </button>
-                    <button class="auth-btn" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                `;
-                document.getElementById('cartBtn').addEventListener('click', openCart);
-                document.getElementById('ordersBtn').addEventListener('click', openOrders);
-                document.getElementById('logoutBtn').addEventListener('click', logout);
-                updateCartBadge();
-            } else {
-                authSection.innerHTML = `
-                    <button class="auth-btn" id="loginBtn">Login</button>
-                    <button class="auth-btn" id="signupBtn">Sign Up</button>
-                `;
-                document.getElementById('loginBtn').addEventListener('click', () => openAuthModal(false));
-                document.getElementById('signupBtn').addEventListener('click', () => openAuthModal(true));
-                cart = [];
-            }
-        }
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('active');
+      document.getElementById('navToggle').classList.toggle('active');
+    });
 
-        // Open auth modal
-        function openAuthModal(signUpMode) {
-            isSignUpMode = signUpMode;
-            const modal = document.getElementById('authModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const submitBtn = document.getElementById('authSubmitBtn');
-            const switchText = document.getElementById('switchText');
-            
-            modalTitle.textContent = signUpMode ? 'Sign Up' : 'Login';
-            submitBtn.textContent = signUpMode ? 'Sign Up' : 'Login';
-            switchText.innerHTML = signUpMode 
-                ? 'Already have an account? <a id="switchLink">Login</a>' 
-                : "Don't have an account? <a id="switchLink">Sign Up</a>";
-            
-            modal.style.display = 'block';
-            document.getElementById('authMessage').innerHTML = '';
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            
-            setTimeout(() => {
-                const switchLink = document.getElementById('switchLink');
-                if (switchLink) {
-                    switchLink.addEventListener('click', () => openAuthModal(!isSignUpMode));
-                }
-            }, 100);
-        }
-
-        // Close modals
-        document.getElementById('closeAuthModal').addEventListener('click', () => {
-            document.getElementById('authModal').style.display = 'none';
-        });
-        document.getElementById('closeCartModal').addEventListener('click', closeCart);
-        document.getElementById('closeOrdersModal').addEventListener('click', closeOrders);
-
-        // Handle auth form submit
-        document.getElementById('authForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const messageDiv = document.getElementById('authMessage');
-            try {
-                if (isSignUpMode) {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    // Send email verification
-                    await sendEmailVerification(user);
-                    messageDiv.innerHTML = `
-                        <div class="success-message">
-                            Account created successfully!<br>
-                            Please check your email to verify your account before logging in.
-                        </div>
-                    `;
-                } else {
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    if (!user.emailVerified) {
-                        messageDiv.innerHTML = `
-                            <div class="error-message">
-                                Please verify your email before logging in.
-                            </div>
-                        `;
-                        await signOut(auth);
-                        return;
-                    }
-                    messageDiv.innerHTML = '<div class="success-message">Logged in successfully!</div>';
-                }
-                setTimeout(() => {
-                    document.getElementById('authModal').style.display = 'none';
-                }, 2000);
-            } catch (error) {
-                let errorMessage = 'An error occurred. Please try again.';
-                if (error.code === 'auth/email-already-in-use') errorMessage = 'Email already in use.';
-                else if (error.code === 'auth/weak-password') errorMessage = 'Password should be at least 6 characters.';
-                else if (error.code === 'auth/invalid-email') errorMessage = 'Invalid email address.';
-                else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorMessage = 'Invalid email or password.';
-                messageDiv.innerHTML = `<div class="error-message">${errorMessage}</div>`;
-            }
-        });
-
-        // Logout function
-        async function logout() {
-            try {
-                await signOut(auth);
-                cart = [];
-            } catch (error) {
-                alert('Error logging out: ' + error.message);
-            }
-        }
-
-        // Cart functions
-        function addToCart(service, type, duration, price) {
-            if (!currentUser) {
-                openAuthModal(false);
-                return;
-            }
-            const item = { id: Date.now(), service, type, duration, price };
-            cart.push(item);
-            updateCartBadge();
-            alert('Item added to cart!');
-        }
-
-        function removeFromCart(itemId) {
-            cart = cart.filter(item => item.id !== itemId);
-            displayCart();
-            updateCartBadge();
-        }
-
-        function updateCartBadge() {
-            const badge = document.getElementById('cartBadge');
-            if (badge) badge.textContent = cart.length;
-        }
-
-        function openCart() {
-            displayCart();
-            document.getElementById('cartModal').style.display = 'block';
-        }
-
-        function closeCart() {
-            document.getElementById('cartModal').style.display = 'none';
-        }
-
-        function displayCart() {
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-            const placeOrderBtn = document.getElementById('placeOrderBtn');
-
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding: 20px;">Your cart is empty</p>';
-                cartTotal.innerHTML = '';
-                placeOrderBtn.style.display = 'none';
-                return;
-            }
-
-            let total = 0;
-            let html = '';
-
-            cart.forEach(item => {
-                total += item.price;
-                html += `
-                    <div class="cart-item">
-                        <div>
-                            <strong>${item.service}</strong> - ${item.type}<br>
-                            <small>${item.duration}</small>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="font-weight: bold;">$${item.price}</span>
-                            <button class="remove-btn" onclick="window.removeFromCart(${item.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            cartItems.innerHTML = html;
-            cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
-            placeOrderBtn.style.display = 'block';
-        }
-
-        // Place order
-        document.getElementById('placeOrderBtn').addEventListener('click', async function() {
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            try {
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
-                await addDoc(collection(db, 'orders'), {
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
-                    items: cart,
-                    total: total,
-                    status: 'pending',
-                    createdAt: serverTimestamp()
-                });
-                alert('Order placed successfully! We will contact you soon.');
-                cart = [];
-                updateCartBadge();
-                closeCart();
-                loadUserOrders();
-            } catch (error) {
-                alert('Error placing order: ' + error.message);
-            }
-        });
-
-        // Orders functions
-        async function loadUserOrders() {
-            if (!currentUser) return;
-            try {
-                const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
-                const querySnapshot = await getDocs(q);
-                const orders = [];
-                querySnapshot.forEach((doc) => {
-                    orders.push({ id: doc.id, ...doc.data() });
-                });
-                window.userOrders = orders;
-            } catch (error) {
-                console.error('Error loading orders:', error);
-            }
-        }
-
-        function openOrders() {
-            displayOrders();
-            document.getElementById('ordersModal').style.display = 'block';
-        }
-
-        function closeOrders() {
-            document.getElementById('ordersModal').style.display = 'none';
-        }
-
-        function displayOrders() {
-            const ordersList = document.getElementById('ordersList');
-            if (!window.userOrders || window.userOrders.length === 0) {
-                ordersList.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding: 20px;">No orders yet</p>';
-                return;
-            }
-
-            let html = '';
-            window.userOrders.forEach(order => {
-                const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
-                html += `
-                    <div class="order-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span><strong>Order Date:</strong> ${date}</span>
-                            <span class="order-status status-pending">${order.status}</span>
-                        </div>
-                        <div style="margin-bottom: 10px;">
-                            <strong>Items:</strong>
-                            ${order.items.map(item => `
-                                <div style="margin-left: 10px; margin-top: 5px;">
-                                    • ${item.service} - ${item.type} (${item.duration}) - $${item.price}
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="text-align: right; font-weight: bold; font-size: 18px; color: var(--primary-color);">
-                            Total: $${order.total.toFixed(2)}
-                        </div>
-                    </div>
-                `;
-            });
-            ordersList.innerHTML = html;
-        }
-
-        // Add-to-cart button listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const service = this.getAttribute('data-service');
-                    const type = this.getAttribute('data-type');
-                    const duration = this.getAttribute('data-duration');
-                    const price = parseFloat(this.getAttribute('data-price'));
-                    addToCart(service, type, duration, price);
-                });
-            });
-        });
-
-        // Mobile menu toggle
-        document.getElementById('navToggle').addEventListener('click', function () {
-            document.querySelector('.nav-links').classList.toggle('active');
-            this.classList.toggle('active');
-        });
-
-        // Close modals by clicking outside
-        window.onclick = function(event) {
-            const authModal = document.getElementById('authModal');
-            const cartModal = document.getElementById('cartModal');
-            const ordersModal = document.getElementById('ordersModal');
-            if (event.target == authModal) authModal.style.display = 'none';
-            if (event.target == cartModal) cartModal.style.display = 'none';
-            if (event.target == ordersModal) ordersModal.style.display = 'none';
-        };
-
-        // Expose removeFromCart globally
-        window.removeFromCart = removeFromCart;
-
-    </script>
+    window.removeFromCart = function(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartBadge();
+      displayCart();
+    };
+  </script>
 </body>
 </html>
